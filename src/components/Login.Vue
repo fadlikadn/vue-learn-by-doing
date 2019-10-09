@@ -21,11 +21,13 @@ export default {
     },
     methods: {
         login: function() {
-            let email = this.email
-            let password = this.password
+            let email = this.email;
+            let password = this.password;
             this.$store.dispatch('login', {email, password})
                 .then(() => this.$router.push('/'))
-                .catch(err => console.log(err))
+                .catch(function(err) {
+                    console.log(err);
+                });
         }
     },
 }

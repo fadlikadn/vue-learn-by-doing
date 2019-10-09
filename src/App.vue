@@ -4,14 +4,16 @@
     <HelloWorld msg="Welcome to Your Vue.js App"/>
     <div id="nav">
       <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link><span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
+      <router-link to="/about">About</router-link>
+      <router-link to="/secure" v-if="isLoggedIn">Secure</router-link>
+      <router-link v-if="isLoggedIn" v-on:click.native="logout" to="/"></router-link>
+      <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
     </div>
     <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 // export default {
 //   name: 'app',
@@ -21,6 +23,7 @@ import HelloWorld from './components/HelloWorld.vue'
 // }
 
 export default {
+  // <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
   computed: {
     isLoggedIn: function() {
       return this.$store.getters.isLoggedIn
@@ -34,6 +37,17 @@ export default {
         })
     }
   },
+  created: function() {
+    this.$http.interceptors.response.use(undefined, function(err) {
+      return new Promise(function(resolve, reject) {
+        console.log(resolve, reject);
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch('logout')
+        }
+        throw err;
+      });
+    });
+  }
 }
 </script>
 
