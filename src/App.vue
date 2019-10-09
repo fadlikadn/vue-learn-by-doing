@@ -6,7 +6,8 @@
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
       <router-link to="/secure" v-if="isLoggedIn">Secure</router-link>
-      <router-link v-if="isLoggedIn" v-on:click.native="logout" to="/"></router-link>
+      <span v-if="!isLoggedIn"> | <a @click="login">Login</a></span>
+      <span v-if="!isLoggedIn"> | <a @click="register">Register</a></span>
       <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
     </div>
     <router-view/>
@@ -35,6 +36,12 @@ export default {
         .then(() => {
           this.$router.push('/login')
         })
+    },
+    login: function() {
+      this.$router.push('/login');
+    },
+    register: function() {
+      this.$router.push('/register')
     }
   },
   created: function() {
